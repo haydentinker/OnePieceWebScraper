@@ -1,4 +1,5 @@
 import requests
+import csv
 from bs4 import BeautifulSoup
 URL="https://onepiece.fandom.com/wiki/List_of_Canon_Characters"
 all_characters_page=requests.get(URL)
@@ -28,6 +29,11 @@ character_map={
     "Birthday":character_information[7].find('div',class_='pi-data-value').text
     #Don't need VA so will leave off the rest
 }
+with open('character.csv',mode='w')as character_file:
+    character_writer=csv.writer(character_file,delimiter=',',quotechar="",quoting=csv.QUOTE_MINIMAL)
+
+    character_writer.writerow(['Japanese_name','Romanized_name','English_name','Debut','Affiliations','Occupations','Birthday'])
+    character_writer.writerow(character_information[0].find('div',class_='pi-data-value').text,character_information[1].find('div',class_='pi-data-value').text,character_information[2].find('div',class_='pi-data-value').text,character_information[3].find('div',class_='pi-data-value').text,character_information[4].find('div',class_='pi-data-value').text,character_information[5].find('div',class_='pi-data-value').text,character_information[7].find('div',class_='pi-data-value').text)
 print(character_map)
 text=character_information[2].find('div',class_='pi-data-value').text.split('(VIZ')
 print(text[0])
