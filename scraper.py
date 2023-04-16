@@ -15,26 +15,21 @@ for table in tables:
             character_table.append(columns[1].contents)
 
 character_URL="https://onepiece.fandom.com"
-characters_page=requests.get(character_URL+character_table[0][0].get('href'))
-soup=BeautifulSoup(characters_page.content, "html.parser")
-character_information=soup.find_all('div',class_='pi-item')
-character_map={
-    "Japanese_name":character_information[0].find('div',class_='pi-data-value').text,
-    "Romanized_name":character_information[1].find('div',class_='pi-data-value').text,
-    "English_name":character_information[2].find('div',class_='pi-data-value').text,
-    "Debut":character_information[3].find('div',class_='pi-data-value').text,
-    "Affiliations":character_information[4].find('div',class_='pi-data-value').text,
-    "Occupations":character_information[5].find('div',class_='pi-data-value').text,
-    #Ignoring Status because spoilers
-    "Birthday":character_information[7].find('div',class_='pi-data-value').text
-    #Don't need VA so will leave off the rest
-}
-with open('character.csv',mode='w')as character_file:
-    character_writer=csv.writer(character_file,delimiter=',',quotechar="",quoting=csv.QUOTE_MINIMAL)
+with open('character.csv',mode='a')as character_file:
+    character_writer=csv.writer(character_file,delimiter=',',quotechar="\"",quoting=csv.QUOTE_MINIMAL)
 
-    character_writer.writerow(['Japanese_name','Romanized_name','English_name','Debut','Affiliations','Occupations','Birthday'])
-    character_writer.writerow(character_information[0].find('div',class_='pi-data-value').text,character_information[1].find('div',class_='pi-data-value').text,character_information[2].find('div',class_='pi-data-value').text,character_information[3].find('div',class_='pi-data-value').text,character_information[4].find('div',class_='pi-data-value').text,character_information[5].find('div',class_='pi-data-value').text,character_information[7].find('div',class_='pi-data-value').text)
-print(character_map)
-text=character_information[2].find('div',class_='pi-data-value').text.split('(VIZ')
-print(text[0])
-print(character_information[4].find('div',class_='pi-data-value').text)
+    character_writer.writerow(['Japanese_name','Romanized_name','English_name','Debut','Affiliations','Occupations'])
+    for i in range(0,len(character_table)):
+        characters_page=requests.get(character_URL+character_table[i][0].get('href'))
+        soup=BeautifulSoup(characters_page.content, "html.parser")
+        character_information=soup.find_all('div',class_='pi-item')
+        character_map={
+            "English_name":character_information[2].find('div',class_='pi-data-value').text,
+            "Debut":character_information[3].find('div',class_='pi-data-value').text,
+            "Affiliations":character_information[4].find('div',class_='pi-data-value').text,
+            "Occupations":character_information[5].find('div',class_='pi-data-value').text,
+            #Ignoring Status because spoiler
+            #Don't need VA so will leave off the rest
+        }
+        character_writer.writerow(character_map.values())
+      
