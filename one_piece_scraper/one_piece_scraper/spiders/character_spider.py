@@ -42,8 +42,10 @@ class CharacterSpiderSpider(scrapy.Spider):
             "//div[@class='pi-item pi-data pi-item-spacing pi-border-color']/div[@class='pi-data-value pi-font']"
         )[5].get()
         occupations_selector = Selector(text=occupations)
-        birthday = response.xpath('//div[@data-source="birth"]')
-        birth_elements = response.xpath('//div[@data-source="birth"]')
+        birthday = response.xpath(
+            "//div[@class='pi-item pi-data pi-item-spacing pi-border-color']/div[@class='pi-data-value pi-font']"
+        )[7].get()
+        birthday_selector = Selector(text=birthday)
         yield {
             "url": url_div,
             "character": name_selector.xpath(
@@ -52,5 +54,5 @@ class CharacterSpiderSpider(scrapy.Spider):
             "anime_debut": anime_selector.xpath("//a/text()")[1].get(),
             "affiliations": affiliations_selector.xpath("//@title").get(),
             "occupations": occupations_selector.xpath("//@title").get(),
-            "birthday": birth_elements.get(),
+            "birthday": birthday_selector.xpath("//text()").get(),
         }
