@@ -12,10 +12,23 @@ class CharacterSpiderSpider(scrapy.Spider):
             rows = table.xpath(".//tr")
             for row in rows:
                 tds = row.xpath(".//a")
-                next_page_url = "https://onepiece.fandom.com/" + tds.attrib["href"]
-                print(next_page_url)
-                if "character" not in next_page_url:
-                    yield response.follow(next_page_url, callback=self.character_parse)
+                if tds:
+                    if "Character" not in tds.attrib["href"]:
+                        next_page_url = (
+                            "https://onepiece.fandom.com/" + tds.attrib["href"]
+                        )
+                        yield response.follow(
+                            next_page_url, callback=self.character_parse
+                        )
 
     def character_parse(self, response):
-        print(response.css("aside").get())
+        print(
+            response.xpath(
+                '//aside[@role="region"]and contains(@class, "portable-infobox")'
+            )
+        )
+        yield {
+            "character": response.xpath(
+                '//aside[@role="region"]and contains(@class, "portable-infobox")'
+            )
+        }
