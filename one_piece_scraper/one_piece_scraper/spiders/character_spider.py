@@ -1,9 +1,9 @@
 import scrapy
+from scrapy.selector import Selector
 
 
 class CharacterSpiderSpider(scrapy.Spider):
     name = "character_spider"
-    allowed_domains = ["https://onepiece.fandom.com/wiki/List_of_Canon_Characters"]
     start_urls = ["https://onepiece.fandom.com/wiki/List_of_Canon_Characters"]
 
     def parse(self, response):
@@ -22,13 +22,15 @@ class CharacterSpiderSpider(scrapy.Spider):
                         )
 
     def character_parse(self, response):
-        print(
-            response.xpath(
-                '//aside[@role="region"]and contains(@class, "portable-infobox")'
-            )
-        )
+        # print("hey")
+        # print(response.xpath('//div[@class="pi-data-value"]').get())
+
+        name_div = response.xpath(
+            "//div[@class='pi-item pi-data pi-item-spacing pi-border-color']/div[@class='pi-data-value pi-font']"
+        )[2].get()
+        selector = Selector(text=name_div)
         yield {
-            "character": response.xpath(
-                '//aside[@role="region"]and contains(@class, "portable-infobox")'
-            )
+            "character": selector.xpath(
+                '//div[@class="pi-data-value pi-font"]/text()'
+            ).get()
         }
