@@ -17,8 +17,6 @@ class OnePieceScraperPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         # Check Length of Item
-        # if len(adapter.keys()) < 6:
-        #     raise DropItem("missing value")
         for i in adapter.keys():
             if adapter[i] == None:
                 raise DropItem("Missing values")
@@ -27,9 +25,9 @@ class OnePieceScraperPipeline:
             adapter[i] = adapter[i].strip(";")
             adapter[i] = adapter[i].strip('"')
             adapter[i] = adapter[i].strip("'")
-            adapter[i] = adapter[i].strip()
             adapter[i] = re.sub("\(.*?\)", "", adapter[i])
             adapter[i] = re.sub("\[.*?\]", "", adapter[i])
+            adapter[i] = adapter[i].strip()
         # Check for dupl
         # url, character, anime_debut, affiliations, occupations, birthday
         # Clean Name

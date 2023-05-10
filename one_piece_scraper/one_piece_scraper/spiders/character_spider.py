@@ -28,7 +28,10 @@ class CharacterSpiderSpider(scrapy.Spider):
 
         name = response.xpath('//div[@data-source="ename"]/div//text()').get()
 
-        anime_debut = response.xpath('//div[@data-source="first"]/div//text()').get()
+        anime_debut = response.xpath(
+            '//div[@data-source="first"]/div[@class="pi-data-value pi-font"]/a'
+        ).getall()
+        anime_selector = Selector(text=anime_debut[1], type="html")
         affiliations = response.xpath(
             '//div[@data-source="affiliation"]/div//text()'
         ).get()
@@ -39,7 +42,7 @@ class CharacterSpiderSpider(scrapy.Spider):
         yield {
             "url": url,
             "name": name,
-            "anime_debut": anime_debut,
+            "anime_debut": anime_selector.xpath("//text()").get(),
             "affiliations": affiliations,
             "occupations": occupations,
             "birthday": birthday,
