@@ -28,6 +28,9 @@ class OnePieceScraperPipeline:
             adapter[i] = re.sub("\(.*?\)", "", adapter[i])
             adapter[i] = re.sub("\[.*?\]", "", adapter[i])
             adapter[i] = adapter[i].strip()
+        adapter["anime_debut"] = "".join(
+            [n for n in adapter["anime_debut"] if n.isdigit()]
+        )
         # Check for dupl
         # url, character, anime_debut, affiliations, occupations, birthday
         # Clean Name
