@@ -17,14 +17,20 @@ class OnePieceScraperPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         # Check Length of Item
-        if len(adapter.keys()) != 6:
-            raise DropItem(("Missing fields"))
-        # Check for duplicates
-        if adapter["character"] in self.names_seen:
-            raise DropItem("Duplicate character")
+        # if len(adapter.keys()) < 6:
+        #     raise DropItem("missing value")
+        for i in adapter.keys():
+            if adapter[i] == None:
+                raise DropItem("Missing values")
+            if adapter[i] == '"':
+                raise DropItem("Missing values")
+            adapter[i] = adapter[i].strip(";")
+            adapter[i] = adapter[i].strip('"')
+            adapter[i] = adapter[i].strip("'")
+            adapter[i] = adapter[i].strip()
+            adapter[i] = re.sub("\(.*?\)", "", adapter[i])
+            adapter[i] = re.sub("\[.*?\]", "", adapter[i])
+        # Check for dupl
         # url, character, anime_debut, affiliations, occupations, birthday
         # Clean Name
-        name = adapter.get("character")
-        name = re.sub("\(.*?\)", "", name)
-        adapter["character"] = re.sub("\[.*?\]", "", name)
         return item
